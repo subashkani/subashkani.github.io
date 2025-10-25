@@ -48,10 +48,9 @@ nav a:hover{opacity:1}
 .trust ul{display:flex;gap:12px;list-style:none;margin:6px 0 0;padding:0}
 
 .card{background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));border:1px solid var(--border);border-radius:16px;padding:18px}
-.card h3{margin:0 0 8px}
+.card h3{margin:0 0 8px;color: var(--text); font-weight:700}
 .checks{margin:8px 0 14px;padding-left:18px}
-.mini-chart{display:flex;gap:8px;align-items:flex-end;height:120px}
-.bar{width:22px;background:linear-gradient(180deg, rgba(124,58,237,0.9), rgba(34,211,238,0.8));border-radius:6px}
+.mini-chart{display:none}
 
 .section{padding:56px 0;border-bottom:1px solid var(--border)}
 .section.alt{background:rgba(255,255,255,0.02)}
@@ -68,31 +67,30 @@ nav a:hover{opacity:1}
 .foot-brand{display:flex;align-items:center;gap:10px}
 .foot-brand img{width:22px;height:22px}
 
-@media (max-width:900px){
-  .hero-grid{grid-template-columns:1fr}
-  .grid-3{grid-template-columns:1fr}
-  .steps{grid-template-columns:1fr}
-}
-
-/* --- KPI Card refresh --- */
+/* KPI design */
 .kpi-card{padding:20px 20px 14px}
 .card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .tag{font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:999px;color:var(--muted)}
 
 .kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:8px 0 6px}
 .kpi{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;padding:12px}
-.kpi-label{font-size:12px;color:var(--muted)}
-.kpi-value{font-size:24px;font-weight:800;margin:2px 0 2px}
+.kpi-label{font-size:12px;color:#a9b7cc}
+.kpi-value{font-size:24px;font-weight:800;margin:2px 0 2px;color: var(--text)}
 .kpi-value.warn{color:#fca5a5}
 .kpi-value.good{color:#86efac}
-.kpi-sub{font-size:12px;color:var(--muted)}
+.kpi-sub{font-size:12px;color:#90a2b8}
 
 .spark-wrap{margin:8px 0 2px}
 .spark{width:100%;height:48px;display:block;opacity:.95}
 .spark-legend{display:flex;align-items:center;gap:8px;margin-top:6px}
 .spark-legend .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2))}
+.spark-legend .muted{color:#9fb0c7}
 
 .flags{margin:10px 0 8px;padding-left:18px}
+.flags li{color: var(--text)}
 
-/* Remove old mini chart if any lingering */
-.mini-chart{display:none}
+@media (max-width:900px){
+  .hero-grid{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+}
