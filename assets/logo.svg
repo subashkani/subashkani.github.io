@@ -1,12 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 64 64" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="64" viewBox="0 0 512 128">
   <defs>
     <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#7c3aed"/>
       <stop offset="1" stop-color="#22d3ee"/>
     </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#7c3aed"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
   </defs>
-  <rect x="4" y="4" width="56" height="56" rx="14" fill="url(#g)"/>
-  <path d="M20 42c6-10 18-10 24 0" stroke="white" stroke-width="3" stroke-linecap="round"/>
-  <circle cx="24" cy="24" r="3" fill="white"/>
-  <circle cx="40" cy="24" r="3" fill="white"/>
+  <!-- Monogram tile -->
+  <g>
+    <rect x="0" y="0" width="128" height="128" rx="28" fill="url(#g)"/>
+    <!-- subtle lens ring -->
+    <circle cx="64" cy="64" r="34" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="4"/>
+    <circle cx="64" cy="64" r="14" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3"/>
+    <!-- T F L letters -->
+    <g fill="#fff" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-weight="800">
+      <text x="26" y="56" font-size="38">T</text>
+      <text x="54" y="56" font-size="38">F</text>
+      <text x="82" y="56" font-size="38">L</text>
+    </g>
+  </g>
+
+  <!-- Wordmark to the right -->
+  <g transform="translate(148,18)" fill="url(#g2)">
+    <text x="0" y="36" font-size="40" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial" font-weight="800">TechFinLens</text>
+  </g>
 </svg>
