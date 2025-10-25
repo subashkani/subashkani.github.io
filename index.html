@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TechFinLens — AI Finance Validation</title>
+  <meta name="description" content="TechFinLens is an AI-powered finance data validation and anomaly detection platform for Oracle EBS and SAP S/4HANA." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#">
+        <img src="assets/logo.svg" alt="TechFinLens logo" />
+        <span>TechFinLens</span>
+      </a>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#about">About</a>
+        <a class="btn small" href="#contact">Join waitlist</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <h1>AI for <span class="accent">Finance Data Validation</span></h1>
+          <p class="lead">
+            Detect duplicates, anomalies, and policy violations across your payables and ledgers.
+            Built for <strong>Oracle EBS</strong> and <strong>SAP&nbsp;S/4HANA</strong>—with fast time to value.
+          </p>
+          <div class="cta-row">
+            <a class="btn primary" href="#contact">Request early access</a>
+            <a class="btn ghost" href="#features">Explore features</a>
+          </div>
+          <div class="trust">
+            <span>Integrates with:</span>
+            <ul>
+              <li>Oracle EBS</li>
+              <li>SAP S/4HANA</li>
+              <li>AP &amp; Claims workflows</li>
+            </ul>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="card">
+            <h3>Anomaly Snapshot</h3>
+            <ul class="checks">
+              <li>⚠️ Duplicate vendor invoices detected</li>
+              <li>⚠️ Mismatched PO–GRN–Invoice (3-way match)</li>
+              <li>ℹ️ Unusual payment terms vs policy</li>
+              <li>✅ 98.7% auto-matched claims</li>
+            </ul>
+            <div class="mini-chart">
+              <div class="bar" style="height:72%"></div>
+              <div class="bar" style="height:48%"></div>
+              <div class="bar" style="height:86%"></div>
+              <div class="bar" style="height:63%"></div>
+            </div>
+            <p class="muted">Illustrative sample, not real data.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="section">
+      <div class="container">
+        <h2>What you get</h2>
+        <div class="grid-3">
+          <div class="feature">
+            <h3>Duplicate &amp; Anomaly Detection</h3>
+            <p>Catch duplicates across vendors, dates, and near-miss amounts using AI similarity and rule sets.</p>
+          </div>
+          <div class="feature">
+            <h3>Policy Controls</h3>
+            <p>Encode approval and exception rules to flag out-of-policy spend automatically.</p>
+          </div>
+          <div class="feature">
+            <h3>Plug-in Integrations</h3>
+            <p>Prebuilt connectors for Oracle EBS and SAP S/4HANA. Bring your own data with CSV/SQL.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" class="section alt">
+      <div class="container">
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li><strong>Ingest</strong> vendor, invoice, PO/GRN, and ledger data securely.</li>
+          <li><strong>Validate</strong> with ML/NLP models and deterministic checks.</li>
+          <li><strong>Explain</strong> every flag with human-readable reasons and evidence.</li>
+          <li><strong>Act</strong> via exports, APIs, and workflow tickets.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="container">
+        <h2>About TechFinLens</h2>
+        <p>
+          We’re building practical AI for finance teams in rail, logistics, and enterprise back offices.
+          The mission: reduce leakage, accelerate close, and give leaders trustworthy numbers.
+        </p>
+      </div>
+    </section>
+
+    <section id="contact" class="section cta">
+      <div class="container">
+        <h2>Join the early access list</h2>
+        <p>Get product updates and a pilot invite when we’re ready.</p>
+        <a class="btn primary large" href="mailto:contact@techfinlens.ai?subject=TechFinLens%20Early%20Access&body=Hi%20TechFinLens%20team%2C%20I%27d%20like%20to%20join%20the%20early%20access%20waitlist.">Email us to request access</a>
+        <p class="muted small">You can change this address in <code>index.html</code> later.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="foot-brand">
+        <img src="assets/logo.svg" alt="TechFinLens logo small" />
+        <strong>TechFinLens</strong>
+        <span class="muted">© <span id="year"></span> All rights reserved.</span>
+      </div>
+      <div class="foot-links">
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="mailto:contact@techfinlens.ai">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
