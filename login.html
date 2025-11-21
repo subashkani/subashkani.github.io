@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Customer Login — TechFinLens</title>
+  <meta name="description" content="Log in to your TechFinLens customer portal to access invoice fraud detection dashboard and analytics." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --card: #151b27;
+      --border: #1e2837;
+      --text: #e8eef7;
+      --text-secondary: #a5b4cb;
+      --text-muted: #6b7a94;
+      --accent: #7c3aed;
+      --accent-2: #22d3ee;
+      --accent-light: #a855f7;
+      --red: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .login-header {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .brand img {
+      width: 32px;
+      height: 32px;
+    }
+
+    .login-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-bg {
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 1000px;
+      height: 1000px;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .login-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px;
+      max-width: 480px;
+      width: 100%;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-header-text {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .login-header-text h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .login-header-text p {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+    }
+
+    input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      margin: 0;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 28px rgba(124, 58, 237, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .forgot-password {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .forgot-password a {
+      color: var(--accent-2);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: opacity 0.2s ease;
+    }
+
+    .forgot-password a:hover {
+      opacity: 0.8;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 32px 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 32px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .signup-link a {
+      color: var(--accent-2);
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s ease;
+    }
+
+    .signup-link a:hover {
+      opacity: 0.8;
+    }
+
+    .error-message {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--red);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .subdomain-section {
+      margin-bottom: 32px;
+      padding: 20px;
+      background: rgba(124, 58, 237, 0.05);
+      border: 1px solid rgba(124, 58, 237, 0.2);
+      border-radius: 12px;
+    }
+
+    .subdomain-section p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    .subdomain-input-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .subdomain-input-group input {
+      flex: 1;
+    }
+
+    .subdomain-input-group .domain-text {
+      color: var(--text-muted);
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 640px) {
+      .login-card {
+        padding: 32px 24px;
+      }
+
+      .login-header-text h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="login-header">
+    <div class="container">
+      <a class="brand" href="/">
+        <img src="assets/logo-tfl.svg?v=3" alt="TechFinLens logo" />
+        <span>TechFinLens</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="login-container">
+    <div class="login-bg"></div>
+    <div class="login-card">
+      <div class="login-header-text">
+        <h1>Welcome Back</h1>
+        <p>Log in to access your invoice fraud detection dashboard</p>
+      </div>
+
+      <div id="errorMessage" class="error-message"></div>
+
+      <form id="loginForm">
+        <div class="subdomain-section">
+          <p>Enter your company subdomain:</p>
+          <div class="subdomain-input-group">
+            <input
+              type="text"
+              id="subdomain"
+              name="subdomain"
+              placeholder="yourcompany"
+              required
+              autocomplete="organization"
+            />
+            <span class="domain-text">.techfinlens.ai</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="you@company.com"
+            required
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="remember" name="remember" />
+          <label for="remember">Remember me for 30 days</label>
+        </div>
+
+        <button type="submit" class="btn">
+          Sign In
+        </button>
+
+        <div class="forgot-password">
+          <a href="#forgot">Forgot your password?</a>
+        </div>
+      </form>
+
+      <div class="divider">or</div>
+
+      <div style="text-align: center;">
+        <a href="mailto:subash@techfinlens.ai?subject=Demo%20Request" style="color: var(--accent-2); text-decoration: none; font-size: 14px; font-weight: 500;">
+          Request a Demo Account →
+        </a>
+      </div>
+
+      <div class="signup-link">
+        Don't have an account? <a href="mailto:subash@techfinlens.ai?subject=Sign%20Up%20Request">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const errorMessage = document.getElementById('errorMessage');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const subdomain = document.getElementById('subdomain').value.trim().toLowerCase();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
+
+      // Hide previous errors
+      errorMessage.classList.remove('show');
+
+      // Basic validation
+      if (!subdomain) {
+        showError('Please enter your company subdomain');
+        return;
+      }
+
+      if (!email || !password) {
+        showError('Please enter both email and password');
+        return;
+      }
+
+      // For demo purposes - replace with actual API endpoint
+      const apiUrl = `https://${subdomain}.techfinlens.ai/api/auth/login`;
+      
+      try {
+        // Disable submit button
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing In...';
+
+        // TODO: Replace this with actual API call
+        // Example API call:
+        /*
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            remember
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Invalid credentials');
+        }
+
+        const data = await response.json();
+        
+        // Store token
+        if (remember) {
+          localStorage.setItem('access_token', data.access_token);
+        } else {
+          sessionStorage.setItem('access_token', data.access_token);
+        }
+
+        // Redirect to dashboard
+        window.location.href = `https://${subdomain}.techfinlens.ai/dashboard`;
+        */
+
+        // Demo fallback - show message
+        setTimeout(() => {
+          showError('Login functionality will be available once the backend is deployed. For now, contact us for demo access.');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Sign In';
+        }, 1000);
+
+      } catch (error) {
+        showError(error.message || 'Login failed. Please check your credentials and try again.');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Sign In';
+      }
+    });
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.classList.add('show');
+      setTimeout(() => {
+        errorMessage.classList.remove('show');
+      }, 5000);
+    }
+
+    // Test credentials helper (for demo)
+    const subdomainInput = document.getElementById('subdomain');
+    const emailInput = document.getElementById('email');
+    
+    subdomainInput.addEventListener('input', (e) => {
+      const value = e.target.value;
+      // Auto-fill demo email if subdomain is 'ling'
+      if (value.toLowerCase() === 'ling' && !emailInput.value) {
+        emailInput.value = 'admin@ling.com';
+      }
+    });
+  </script>
+</body>
+</html>

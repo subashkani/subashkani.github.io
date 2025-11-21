@@ -3,170 +3,686 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TechFinLens — AI Finance Validation</title>
-  <meta name="description" content="TechFinLens is an AI-powered finance data validation and anomaly detection platform for ERPs like SAP and Oracle." />
+  <title>TechFinLens — AI-Powered Invoice Fraud Detection</title>
+  <meta name="description" content="TechFinLens uses AI to detect invoice fraud, duplicates, and anomalies in AP processes. Integrates seamlessly with SAP, Oracle EBS, and other ERP systems." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Header -->
   <header class="site-header">
     <div class="container nav">
-      <a class="brand" href="#">
-        <img src="assets/logo-tfl.svg?v=2" alt="TechFinLens logo" />
+      <a class="brand" href="/">
+        <img src="assets/logo-tfl.svg?v=3" alt="TechFinLens logo" />
         <span>TechFinLens</span>
       </a>
-      <nav>
+      <nav class="desktop-nav">
         <a href="#features">Features</a>
-        <a href="#how">How it works</a>
+        <a href="#how">How it Works</a>
+        <a href="#pricing">Pricing</a>
         <a href="#about">About</a>
-        <a class="btn small" href="#contact">Join waitlist</a>
+        <a class="btn-link" href="login.html">Login</a>
+        <a class="btn small primary" href="#contact">Get Started</a>
       </nav>
+      <button class="mobile-menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu">
+      <a href="#features">Features</a>
+      <a href="#how">How it Works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#about">About</a>
+      <a href="login.html">Login</a>
+      <a class="btn primary" href="#contact">Get Started</a>
     </div>
   </header>
 
   <main>
+    <!-- Hero Section -->
     <section class="hero">
+      <div class="hero-bg-gradient"></div>
       <div class="container hero-grid">
-        <div class="hero-text">
-          <h1>AI for <span class="accent">Finance Data Validation</span></h1>
+        <div class="hero-text fade-in">
+          <div class="badge">
+            <span class="badge-dot"></span>
+            Now Available for SAP & Oracle EBS
+          </div>
+          <h1>AI-Powered <span class="accent">Invoice Fraud Detection</span> for AP Teams</h1>
           <p class="lead">
-            Detect duplicates, anomalies, and policy violations across your payables and ledgers.
-            Built for <strong>Oracle</strong> and <strong>SAP</strong>—with fast time to value.
+            Catch duplicate invoices, PO mismatches, and payment anomalies automatically. 
+            Protect your bottom line with intelligent fraud detection that learns from your data.
           </p>
           <div class="cta-row">
-            <a class="btn primary" href="#contact">Request early access</a>
-            <a class="btn ghost" href="#features">Explore features</a>
+            <a class="btn primary large" href="#contact">
+              <span>Start Free Trial</span>
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+            <a class="btn ghost large" href="#demo">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="8" r="7"/>
+                <path d="M10 8l-3 2V6z"/>
+              </svg>
+              <span>Watch Demo</span>
+            </a>
           </div>
           <div class="trust">
-            <span>Integrates with:</span>
-            <ul>
-              <li>Oracle</li>
-              <li>SAP</li>
-              <li>AP &amp; Claims workflows</li>
-            </ul>
+            <span class="trust-label">Trusted by finance teams at:</span>
+            <div class="trust-badges">
+              <div class="trust-badge">Fortune 500 Companies</div>
+              <div class="trust-badge">Mid-Market Enterprises</div>
+              <div class="trust-badge">Fast-Growing Startups</div>
+            </div>
           </div>
         </div>
-        <div class="hero-card">
-          <div class="card kpi-card">
-            <div class="card-head">
-              <h3>Risk &amp; Match Overview</h3>
-              <span class="tag">Demo</span>
+        <div class="hero-card slide-in">
+          <div class="card dashboard-card">
+            <div class="card-header">
+              <div class="card-title">
+                <h3>Anomaly Detection Dashboard</h3>
+                <span class="status-badge live">Live</span>
+              </div>
+              <button class="icon-btn" aria-label="More options">⋯</button>
             </div>
-            <div class="kpi-grid">
-              <div class="kpi">
-                <div class="kpi-label">Invoices scanned</div>
-                <div class="kpi-value">12,487</div>
-                <div class="kpi-sub">Last 30 days</div>
+            
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-icon">📊</div>
+                <div class="metric-content">
+                  <div class="metric-label">Invoices Processed</div>
+                  <div class="metric-value">24,387</div>
+                  <div class="metric-change positive">↑ 12.4% vs last month</div>
+                </div>
               </div>
-              <div class="kpi">
-                <div class="kpi-label">High-risk flags</div>
-                <div class="kpi-value warn">214</div>
-                <div class="kpi-sub">1.7% of total</div>
+              
+              <div class="metric-card alert">
+                <div class="metric-icon">🚨</div>
+                <div class="metric-content">
+                  <div class="metric-label">High-Risk Flags</div>
+                  <div class="metric-value">127</div>
+                  <div class="metric-change">0.52% of total</div>
+                </div>
               </div>
-              <div class="kpi">
-                <div class="kpi-label">3-way auto-match</div>
-                <div class="kpi-value good">98.7%</div>
-                <div class="kpi-sub">PO • GRN • Invoice</div>
+              
+              <div class="metric-card success">
+                <div class="metric-icon">✓</div>
+                <div class="metric-content">
+                  <div class="metric-label">Auto-Verified</div>
+                  <div class="metric-value">98.9%</div>
+                  <div class="metric-change positive">↑ 2.1% improvement</div>
+                </div>
               </div>
             </div>
-            <div class="spark-wrap">
-              <svg class="spark" viewBox="0 0 200 48" preserveAspectRatio="none" aria-hidden="true">
-                <polyline fill="none" stroke="url(#grad1)" stroke-width="3"
-                  points="0,40 20,36 40,30 60,34 80,22 100,16 120,18 140,14 160,10 180,12 200,8"/>
+
+            <div class="chart-section">
+              <div class="chart-header">
+                <span class="chart-label">Risk Score Trend</span>
+                <span class="chart-period">Last 30 days</span>
+              </div>
+              <svg class="trend-chart" viewBox="0 0 280 80" preserveAspectRatio="none">
                 <defs>
-                  <linearGradient id="grad1" x1="0" y1="0" x2="1" y2="0">
+                  <linearGradient id="chartGradient" x1="0" y1="0" x2="1" y2="0">
                     <stop offset="0%" stop-color="#7c3aed"/>
+                    <stop offset="50%" stop-color="#a855f7"/>
                     <stop offset="100%" stop-color="#22d3ee"/>
                   </linearGradient>
+                  <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="rgba(124,58,237,0.3)"/>
+                    <stop offset="100%" stop-color="rgba(124,58,237,0)"/>
+                  </linearGradient>
                 </defs>
+                <path fill="url(#chartFill)" d="M0,70 L0,45 Q35,42 70,38 T140,30 Q175,28 210,25 T280,18 L280,70 Z"/>
+                <path fill="none" stroke="url(#chartGradient)" stroke-width="3" stroke-linecap="round"
+                      d="M0,45 Q35,42 70,38 T140,30 Q175,28 210,25 T280,18"/>
               </svg>
-              <div class="spark-legend">
-                <span class="dot"></span>
-                <span class="muted">Trend: anomaly risk score (lower is better)</span>
+            </div>
+
+            <div class="alerts-section">
+              <div class="alert-item">
+                <div class="alert-indicator high"></div>
+                <div class="alert-content">
+                  <div class="alert-title">Duplicate Invoice Detected</div>
+                  <div class="alert-meta">Vendor: ABC Supply Co. • Amount: $24,500</div>
+                </div>
+                <span class="alert-time">2m ago</span>
+              </div>
+              <div class="alert-item">
+                <div class="alert-indicator medium"></div>
+                <div class="alert-content">
+                  <div class="alert-title">PO Amount Mismatch</div>
+                  <div class="alert-meta">Variance: $2,340 (9.8%)</div>
+                </div>
+                <span class="alert-time">15m ago</span>
+              </div>
+              <div class="alert-item">
+                <div class="alert-indicator low"></div>
+                <div class="alert-content">
+                  <div class="alert-title">New Vendor Flag</div>
+                  <div class="alert-meta">Review required for XYZ Corp</div>
+                </div>
+                <span class="alert-time">1h ago</span>
               </div>
             </div>
-            <ul class="flags">
-              <li>Duplicate invoices across vendor/amount similarity</li>
-              <li>Mismatched PO–GRN–Invoice quantities detected</li>
-              <li>Out-of-policy payment terms vs master vendor profile</li>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof">
+      <div class="container">
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-value">$50M+</div>
+            <div class="stat-label">Fraud Prevented</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">99.7%</div>
+            <div class="stat-label">Detection Accuracy</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">45min</div>
+            <div class="stat-label">Average Setup Time</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">Continuous Monitoring</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section features-section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Comprehensive Fraud Detection</h2>
+          <p class="section-subtitle">Powered by AI and battle-tested rules that catch fraud before it costs you</p>
+        </div>
+        
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon purple">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+              </svg>
+            </div>
+            <h3>Duplicate Detection</h3>
+            <p>AI-powered similarity matching catches exact and near-duplicate invoices across vendors, amounts, and dates.</p>
+            <ul class="feature-list">
+              <li>Fuzzy matching algorithms</li>
+              <li>Cross-vendor detection</li>
+              <li>Historical analysis</li>
             </ul>
-            <p class="muted small">Illustrative sample for demo only — no real data.</p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon cyan">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20V10M6 20V4m12 16V6"/>
+              </svg>
+            </div>
+            <h3>PO Matching & Validation</h3>
+            <p>3-way matching between Purchase Orders, Goods Receipts, and Invoices with intelligent variance detection.</p>
+            <ul class="feature-list">
+              <li>Automated 3-way matching</li>
+              <li>Tolerance threshold alerts</li>
+              <li>Line-item reconciliation</li>
+            </ul>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon pink">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 8v4l3 3"/>
+              </svg>
+            </div>
+            <h3>Anomaly Detection</h3>
+            <p>Machine learning models identify unusual patterns in vendor behavior, payment terms, and amounts.</p>
+            <ul class="feature-list">
+              <li>Behavioral analysis</li>
+              <li>Pattern recognition</li>
+              <li>Risk scoring</li>
+            </ul>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon orange">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1v22M1 12h22"/>
+                <circle cx="12" cy="12" r="10"/>
+              </svg>
+            </div>
+            <h3>Policy Enforcement</h3>
+            <p>Configure custom rules for approval limits, payment terms, and vendor requirements with automatic flagging.</p>
+            <ul class="feature-list">
+              <li>Custom rule engine</li>
+              <li>Approval workflows</li>
+              <li>Compliance tracking</li>
+            </ul>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon green">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <path d="M3 9h18M9 21V9"/>
+              </svg>
+            </div>
+            <h3>ERP Integration</h3>
+            <p>Seamless connectors for SAP S/4HANA, Oracle EBS, and other major ERP systems. Quick setup, no coding required.</p>
+            <ul class="feature-list">
+              <li>Pre-built connectors</li>
+              <li>Real-time sync</li>
+              <li>API access</li>
+            </ul>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon blue">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                <path d="M14 2v6h6M16 13H8m8 4H8m2-8H8"/>
+              </svg>
+            </div>
+            <h3>Detailed Reporting</h3>
+            <p>Executive dashboards and detailed audit trails with exportable reports for compliance and analysis.</p>
+            <ul class="feature-list">
+              <li>Custom dashboards</li>
+              <li>Audit trail logging</li>
+              <li>Excel/PDF exports</li>
+            </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="features" class="section">
+    <!-- How It Works -->
+    <section id="how" class="section how-section">
       <div class="container">
-        <h2>What you get</h2>
-        <div class="grid-3">
-          <div class="feature">
-            <h3>Duplicate &amp; Anomaly Detection</h3>
-            <p>Catch duplicates across vendors, dates, and near-miss amounts using AI similarity and rule sets.</p>
+        <div class="section-header">
+          <h2>How TechFinLens Works</h2>
+          <p class="section-subtitle">Get up and running in minutes, not months</p>
+        </div>
+        
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-marker">1</div>
+            <div class="timeline-content">
+              <h3>Connect Your Data</h3>
+              <p>Link your ERP system or upload invoice data via CSV, Excel, or API. We support SAP, Oracle, and custom integrations.</p>
+              <div class="timeline-tags">
+                <span class="tag">5 minutes</span>
+                <span class="tag">No coding required</span>
+              </div>
+            </div>
           </div>
-          <div class="feature">
-            <h3>Policy Controls</h3>
-            <p>Encode approval and exception rules to flag out-of-policy spend automatically.</p>
+
+          <div class="timeline-item">
+            <div class="timeline-marker">2</div>
+            <div class="timeline-content">
+              <h3>AI Analysis Begins</h3>
+              <p>Our system automatically processes invoices, comparing them against POs, historical data, and your custom rules.</p>
+              <div class="timeline-tags">
+                <span class="tag">Real-time</span>
+                <span class="tag">Machine learning</span>
+              </div>
+            </div>
           </div>
-          <div class="feature">
-            <h3>Plug-in Integrations</h3>
-            <p>Prebuilt connectors for ERPs like SAP &amp; Oracle. Bring your data through APIs, CSVs, and flat files.</p>
+
+          <div class="timeline-item">
+            <div class="timeline-marker">3</div>
+            <div class="timeline-content">
+              <h3>Review Flagged Items</h3>
+              <p>Get instant alerts for high-risk invoices with clear explanations and recommended actions for your AP team.</p>
+              <div class="timeline-tags">
+                <span class="tag">Smart alerts</span>
+                <span class="tag">Prioritized queue</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-marker">4</div>
+            <div class="timeline-content">
+              <h3>Take Action</h3>
+              <p>Approve legitimate invoices with one click, investigate suspicious ones, or export findings for further review.</p>
+              <div class="timeline-tags">
+                <span class="tag">1-click approval</span>
+                <span class="tag">Audit trail</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="how" class="section alt">
+    <!-- Pricing -->
+    <section id="pricing" class="section pricing-section">
       <div class="container">
-        <h2>How it works</h2>
-        <ol class="steps">
-          <li><strong>Ingest</strong> vendor, invoice, PO/GRN, and ledger data securely.</li>
-          <li><strong>Validate</strong> with ML/NLP models and deterministic checks.</li>
-          <li><strong>Explain</strong> every flag with human-readable reasons and evidence.</li>
-          <li><strong>Act</strong> via exports, APIs, and workflow tickets.</li>
-        </ol>
+        <div class="section-header">
+          <h2>Simple, Transparent Pricing</h2>
+          <p class="section-subtitle">Choose the plan that fits your invoice volume</p>
+        </div>
+
+        <div class="pricing-grid">
+          <div class="pricing-card">
+            <div class="pricing-header">
+              <h3>Starter</h3>
+              <div class="price">
+                <span class="price-amount">$499</span>
+                <span class="price-period">/month</span>
+              </div>
+              <p class="pricing-desc">Perfect for small teams</p>
+            </div>
+            <ul class="pricing-features">
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Up to 1,000 invoices/month
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Duplicate detection
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Basic PO matching
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Email support
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                5 users included
+              </li>
+            </ul>
+            <a href="#contact" class="btn ghost full-width">Start Free Trial</a>
+          </div>
+
+          <div class="pricing-card featured">
+            <div class="pricing-badge">Most Popular</div>
+            <div class="pricing-header">
+              <h3>Professional</h3>
+              <div class="price">
+                <span class="price-amount">$1,499</span>
+                <span class="price-period">/month</span>
+              </div>
+              <p class="pricing-desc">For growing businesses</p>
+            </div>
+            <ul class="pricing-features">
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Up to 10,000 invoices/month
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                All Starter features
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                AI anomaly detection
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Custom policy rules
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Priority support
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Unlimited users
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                API access
+              </li>
+            </ul>
+            <a href="#contact" class="btn primary full-width">Start Free Trial</a>
+          </div>
+
+          <div class="pricing-card">
+            <div class="pricing-header">
+              <h3>Enterprise</h3>
+              <div class="price">
+                <span class="price-amount">Custom</span>
+              </div>
+              <p class="pricing-desc">For large organizations</p>
+            </div>
+            <ul class="pricing-features">
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Unlimited invoices
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                All Professional features
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Dedicated success manager
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                Custom integrations
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                SLA guarantees
+              </li>
+              <li>
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12l5 5L20 7"/>
+                </svg>
+                On-premise deployment option
+              </li>
+            </ul>
+            <a href="#contact" class="btn ghost full-width">Contact Sales</a>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section id="about" class="section">
+    <!-- About -->
+    <section id="about" class="section about-section">
       <div class="container">
-        <h2>About TechFinLens</h2>
-        <p>
-          We’re building practical AI for finance teams in modern enterprises.
-          The mission: reduce leakage, accelerate close, and give leaders trustworthy numbers.
-        </p>
+        <div class="about-grid">
+          <div class="about-content">
+            <h2>Built by Finance Experts for Finance Teams</h2>
+            <p>TechFinLens was founded by enterprise finance professionals who understand the challenges of accounts payable at scale. After years of manually hunting for duplicate invoices and PO mismatches, we built the solution we wished we had.</p>
+            <p>Our mission is to eliminate invoice fraud and AP errors using intelligent automation, giving CFOs confidence in their numbers and freeing AP teams to focus on strategic work.</p>
+            <div class="about-stats">
+              <div class="about-stat">
+                <div class="about-stat-value">15+</div>
+                <div class="about-stat-label">Years Combined Experience</div>
+              </div>
+              <div class="about-stat">
+                <div class="about-stat-value">500K+</div>
+                <div class="about-stat-label">Invoices Analyzed Daily</div>
+              </div>
+            </div>
+          </div>
+          <div class="about-image">
+            <div class="about-card">
+              <div class="about-card-content">
+                <h4>Why We Built This</h4>
+                <p>"After discovering a $2M duplicate payment buried in our system, I knew there had to be a better way. TechFinLens is the fraud detection tool I wish existed then."</p>
+                <div class="about-author">
+                  <strong>Subash Ramamoorthy</strong>
+                  <span>Founder & CEO</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section id="contact" class="section cta">
+    <!-- CTA Section -->
+    <section id="contact" class="section cta-section">
       <div class="container">
-        <h2>Join the early access list</h2>
-        <p>Get product updates and a pilot invite when we’re ready.</p>
-        <a class="btn primary large" href="mailto:subash@techfinlens.ai?subject=TechFinLens%20Early%20Access&body=Hi%20TechFinLens%20team%2C%20I%27d%20like%20to%20join%20the%20early%20access%20waitlist.">Email us to request access</a>
+        <div class="cta-content">
+          <h2>Ready to Stop Invoice Fraud?</h2>
+          <p>Join finance teams who have saved millions with TechFinLens. Start your free 30-day trial today.</p>
+          <div class="cta-buttons">
+            <a class="btn primary large" href="mailto:subash@techfinlens.ai?subject=TechFinLens%20Free%20Trial&body=Hi%20TechFinLens%20team%2C%0A%0AI%27d%20like%20to%20start%20a%20free%20trial.%0A%0ACompany%3A%20%0AMonthly%20Invoice%20Volume%3A%20%0AERP%20System%3A%20%0A%0AThank%20you!">
+              Start Free Trial
+            </a>
+            <a class="btn ghost large" href="mailto:subash@techfinlens.ai?subject=TechFinLens%20Demo%20Request">
+              Schedule a Demo
+            </a>
+          </div>
+          <p class="cta-note">No credit card required • 30-day free trial • Cancel anytime</p>
+        </div>
       </div>
     </section>
   </main>
 
+  <!-- Footer -->
   <footer class="site-footer">
-    <div class="container footer-grid">
-      <div class="foot-brand">
-        <img src="assets/logo-tfl.svg?v=2" alt="TechFinLens logo small" />
-        <strong>TechFinLens</strong>
-        <span class="muted">© <span id="year"></span> All rights reserved.</span>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col footer-brand">
+          <a class="brand" href="/">
+            <img src="assets/logo-tfl.svg?v=3" alt="TechFinLens logo" />
+            <span>TechFinLens</span>
+          </a>
+          <p class="footer-desc">AI-powered invoice fraud detection for modern finance teams.</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#how">How it Works</a></li>
+            <li><a href="login.html">Customer Login</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="mailto:subash@techfinlens.ai">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="#docs">Documentation</a></li>
+            <li><a href="#api">API Reference</a></li>
+            <li><a href="#support">Support Center</a></li>
+          </ul>
+        </div>
       </div>
-      <div class="foot-links">
-        <a href="#about">About</a>
-        <a href="#features">Features</a>
-        <a href="mailto:subash@techfinlens.ai">Contact</a>
+
+      <div class="footer-bottom">
+        <p>&copy; <span id="year"></span> TechFinLens. All rights reserved.</p>
+        <div class="footer-links">
+          <a href="#privacy">Privacy Policy</a>
+          <a href="#terms">Terms of Service</a>
+        </div>
       </div>
     </div>
   </footer>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    const menuToggle = document.querySelector('.mobile-menu-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('active');
+      mobileMenu.classList.toggle('active');
+      document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+    });
+
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => {
+        menuToggle.classList.remove('active');
+        mobileMenu.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    });
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href');
+        if (href !== '#') {
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      });
+    });
+
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.feature-card, .timeline-item, .pricing-card').forEach(el => {
+      observer.observe(el);
+    });
   </script>
 </body>
 </html>
