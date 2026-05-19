@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechFinLens — AI-Powered Invoice Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #080d1c;
+  --blue: #2451ff;
+  --blue2: #4a6bff;
+  --teal: #00c9b1;
+  --amber: #ffb800;
+  --red: #ff4757;
+  --white: #ffffff;
+  --muted: #7a86a8;
+  --border: rgba(255,255,255,0.08);
+  --card: rgba(255,255,255,0.035);
+  --in-orange: #ff6b00;
+  --in-green: #138808;
+  --in-saffron: #ff9933;
+  --us-navy: #3c3b6e;
+  --us-red: #b22234;
+  --us-gold: #ffcc00;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--ink);color:var(--white);overflow-x:hidden;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999}
+
+.page{display:none}
+.page.active{display:block}
+
+.orb{position:fixed;border-radius:50%;filter:blur(130px);pointer-events:none;z-index:0;opacity:0.15;transition:background 1s}
+.orb1{width:700px;height:700px;top:-250px;left:-200px}
+.orb2{width:500px;height:500px;bottom:50px;right:-150px}
+.orb3{width:350px;height:350px;top:55%;left:50%;transform:translate(-50%,-50%);opacity:0.09}
+body.picker .orb1{background:var(--blue)}
+body.picker .orb2{background:var(--teal)}
+body.picker .orb3{background:var(--blue2)}
+body.india .orb1{background:var(--in-saffron)}
+body.india .orb2{background:var(--in-green)}
+body.india .orb3{background:var(--in-orange)}
+body.usa .orb1{background:var(--us-navy)}
+body.usa .orb2{background:var(--us-red)}
+body.usa .orb3{background:var(--us-gold)}
+
+/* ── PICKER ── */
+#picker-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1;padding:40px 24px;text-align:center}
+.pk-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.9rem;letter-spacing:-0.02em;margin-bottom:52px;background:linear-gradient(135deg,#fff 30%,var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.pk-logo span{-webkit-text-fill-color:var(--teal)}
+.pk-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,5vw,3.2rem);line-height:1.1;letter-spacing:-0.03em;margin-bottom:14px;max-width:680px}
+.pk-sub{color:var(--muted);font-size:1rem;max-width:460px;font-weight:300;line-height:1.75;margin-bottom:56px}
+.pk-cards{display:flex;gap:28px;flex-wrap:wrap;justify-content:center}
+.pk-card{width:300px;border-radius:24px;padding:44px 36px;border:1px solid var(--border);background:var(--card);cursor:pointer;transition:all 0.35s ease;display:flex;flex-direction:column;align-items:center;gap:18px;position:relative;overflow:hidden;backdrop-filter:blur(10px)}
+.pk-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.35s}
+.pk-card.india-c::before{background:linear-gradient(135deg,rgba(255,153,51,0.12),rgba(19,136,8,0.08))}
+.pk-card.usa-c::before{background:linear-gradient(135deg,rgba(60,59,110,0.2),rgba(178,34,52,0.1))}
+.pk-card:hover{transform:translateY(-8px);border-color:rgba(255,255,255,0.18)}
+.pk-card:hover::before{opacity:1}
+.pk-card.india-c:hover{box-shadow:0 24px 80px rgba(255,153,51,0.15)}
+.pk-card.usa-c:hover{box-shadow:0 24px 80px rgba(60,59,110,0.25)}
+.pk-flag{font-size:5rem;line-height:1;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.3))}
+.pk-country{font-family:'Syne',sans-serif;font-weight:800;font-size:1.5rem}
+.pk-tagline{font-size:0.83rem;color:var(--muted);text-align:center;font-weight:300;line-height:1.55}
+.pk-btn{margin-top:6px;padding:11px 26px;border-radius:10px;border:none;font-size:0.88rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;color:#fff}
+.india-c .pk-btn{background:linear-gradient(135deg,#ff9933,#138808)}
+.usa-c .pk-btn{background:linear-gradient(135deg,#3c3b6e,#b22234)}
+.pk-btn:hover{transform:scale(1.04);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.pk-foot{margin-top:52px;font-size:0.76rem;color:rgba(255,255,255,0.22)}
+
+/* ── SHARED NAV ── */
+.snav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px 60px;background:rgba(8,13,28,0.78);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.snav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-0.02em;cursor:pointer;background:linear-gradient(135deg,#fff 30%,var(--teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.snav-logo span{-webkit-text-fill-color:var(--teal)}
+.snav-mid{display:flex;align-items:center;gap:8px}
+.cbadge{font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:0.06em;text-transform:uppercase}
+.india-badge{background:rgba(255,153,51,0.15);color:#ff9933;border:1px solid rgba(255,153,51,0.3)}
+.usa-badge{background:rgba(60,59,110,0.3);color:#8b90ff;border:1px solid rgba(60,59,110,0.5)}
+.snav-links{display:flex;gap:30px}
+.snav-links a{font-size:0.87rem;color:var(--muted);text-decoration:none;transition:color 0.2s;font-weight:500}
+.snav-links a:hover{color:var(--white)}
+.switch-btn{font-size:0.76rem;color:var(--muted);cursor:pointer;border:1px solid var(--border);background:transparent;padding:6px 13px;border-radius:8px;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.switch-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.2)}
+.ncta{padding:9px 22px;border-radius:8px;border:none;font-size:0.87rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;color:#fff}
+.india-page .ncta{background:linear-gradient(135deg,#ff9933,#e07b00)}
+.usa-page .ncta{background:linear-gradient(135deg,#3c3b6e,#b22234)}
+.ncta:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+
+/* ── SHARED SECTION ── */
+.sec{position:relative;z-index:1}
+.si{max-width:1200px;margin:0 auto;padding:0 60px}
+.slabel{font-size:0.71rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:13px}
+.india-page .slabel{color:var(--in-saffron)}
+.usa-page .slabel{color:#8b90ff}
+h2{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.8rem,3.5vw,2.75rem);line-height:1.15;letter-spacing:-0.025em;margin-bottom:16px}
+.india-page h2 em{font-style:normal;background:linear-gradient(135deg,#ff9933,#138808);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.usa-page h2 em{font-style:normal;background:linear-gradient(135deg,#8b90ff,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ssub{color:var(--muted);font-size:0.97rem;max-width:540px;font-weight:300;line-height:1.75}
+
+/* ── BUTTONS ── */
+.btn-p{padding:13px 30px;border-radius:10px;border:none;font-size:0.93rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;color:#fff}
+.india-page .btn-p{background:linear-gradient(135deg,#ff9933,#e07b00);box-shadow:0 0 36px rgba(255,153,51,0.3)}
+.usa-page .btn-p{background:linear-gradient(135deg,#3c3b6e,#b22234);box-shadow:0 0 36px rgba(60,59,110,0.35)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 0 56px rgba(0,0,0,0.4)}
+.btn-o{padding:13px 30px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);background:transparent;font-size:0.93rem;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--white);cursor:pointer;transition:all 0.2s}
+.btn-o:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,255,255,0.38)}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;align-items:center;padding:120px 60px 80px;position:relative;z-index:1}
+.hgrid{max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:center}
+.hbadge{display:inline-flex;align-items:center;gap:8px;font-size:0.73rem;font-weight:600;padding:5px 13px;border-radius:100px;margin-bottom:26px;letter-spacing:0.05em;text-transform:uppercase}
+.india-page .hbadge{background:rgba(255,153,51,0.12);border:1px solid rgba(255,153,51,0.3);color:#ffb562}
+.usa-page .hbadge{background:rgba(60,59,110,0.25);border:1px solid rgba(100,100,200,0.35);color:#a0a8ff}
+.bdot{width:6px;height:6px;border-radius:50%;animation:blink 2s infinite}
+.india-page .bdot{background:var(--in-saffron)}
+.usa-page .bdot{background:#8b90ff}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.1rem,4.5vw,3.5rem);line-height:1.1;letter-spacing:-0.03em;margin-bottom:20px}
+.india-page h1 em{font-style:normal;background:linear-gradient(135deg,#ff9933,#ffcc00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.usa-page h1 em{font-style:normal;background:linear-gradient(135deg,#8b90ff,#ff6b6b);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hsub{color:var(--muted);font-size:1.02rem;line-height:1.75;max-width:520px;margin-bottom:36px;font-weight:300}
+.cta-row{display:flex;gap:13px;flex-wrap:wrap}
+.hstats{display:flex;gap:32px;margin-top:48px;flex-wrap:wrap}
+.hstat{padding-left:16px}
+.india-page .hstat{border-left:2px solid rgba(255,153,51,0.4)}
+.usa-page .hstat{border-left:2px solid rgba(60,59,110,0.55)}
+.hsnum{font-family:'Syne',sans-serif;font-size:1.65rem;font-weight:800}
+.hslabel{font-size:0.73rem;color:var(--muted);margin-top:2px}
+
+/* DASH MOCK */
+.hvisual{position:relative}
+.dmock{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,0.5);animation:floatY 6s ease-in-out infinite}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.dtop{background:rgba(255,255,255,0.05);padding:11px 17px;display:flex;align-items:center;gap:7px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.dot{width:9px;height:9px;border-radius:50%}
+.dtitle{font-size:0.73rem;color:var(--muted);margin-left:auto}
+.dbody{padding:16px}
+.krow{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}
+.kpi{background:rgba(255,255,255,0.05);border-radius:9px;padding:11px 13px;border:1px solid rgba(255,255,255,0.07)}
+.kl{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px}
+.kv{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800}
+.ilist{display:flex;flex-direction:column;gap:6px}
+.irow{display:flex;align-items:center;gap:9px;background:rgba(255,255,255,0.03);border-radius:7px;padding:8px 11px;font-size:0.7rem;border:1px solid rgba(255,255,255,0.05)}
+.ivend{flex:1;font-weight:500;color:rgba(255,255,255,0.85)}
+.iamt{font-family:'Syne',sans-serif;font-size:0.76rem;font-weight:700}
+.rpill{font-size:0.58rem;font-weight:700;padding:2px 7px;border-radius:100px;letter-spacing:0.04em;text-transform:uppercase}
+.rmed{background:rgba(255,184,0,0.15);color:var(--amber);border:1px solid rgba(255,184,0,0.3)}
+.rok{background:rgba(0,201,177,0.12);color:var(--teal);border:1px solid rgba(0,201,177,0.25)}
+.rpend{background:rgba(100,120,255,0.15);color:#8b90ff;border:1px solid rgba(100,120,255,0.3)}
+.rhi{background:rgba(255,71,87,0.15);color:var(--red);border:1px solid rgba(255,71,87,0.3)}
+.fc{position:absolute;background:rgba(14,21,45,0.88);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.13);border-radius:12px;padding:11px 15px;box-shadow:0 16px 48px rgba(0,0,0,0.4)}
+.fc1{top:-20px;right:-26px;animation:fca 5s ease-in-out infinite}
+@keyframes fca{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-7px) rotate(2deg)}}
+.fc2{bottom:-16px;left:-26px;animation:fcb 7s ease-in-out infinite}
+@keyframes fcb{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(7px) rotate(-2deg)}}
+.fcl{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em}
+.fcv{font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:800;margin-top:2px}
+.fcn{font-size:0.62rem;color:var(--muted);margin-top:2px}
+
+/* ── MARQUEE ── */
+.mqwrap{overflow:hidden;padding:26px 0;position:relative;z-index:1;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(255,255,255,0.01)}
+.mqtrack{display:flex;gap:32px;animation:mq 28s linear infinite;white-space:nowrap}
+@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.mqi{display:flex;align-items:center;gap:7px;font-size:0.78rem;color:var(--muted);font-weight:500;flex-shrink:0}
+
+/* ── FEATURES ── */
+.fsec{padding:108px 0}
+.fhdr{text-align:center;margin-bottom:68px}
+.fhdr .ssub{margin:0 auto}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.fcard{background:rgba(255,255,255,0.025);padding:34px 30px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background 0.3s}
+.fcard:hover{background:rgba(255,255,255,0.045)}
+.fcard:nth-child(3),.fcard:nth-child(6){border-right:none}
+.fcard:nth-child(4),.fcard:nth-child(5),.fcard:nth-child(6){border-bottom:none}
+.fico{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.15rem;margin-bottom:18px}
+.india-page .fico{background:rgba(255,153,51,0.12);border:1px solid rgba(255,153,51,0.25)}
+.usa-page .fico{background:rgba(60,59,110,0.25);border:1px solid rgba(100,100,200,0.25)}
+.fcard h3{font-family:'Syne',sans-serif;font-size:0.97rem;font-weight:700;margin-bottom:9px}
+.fcard p{color:var(--muted);font-size:0.85rem;line-height:1.7;font-weight:300}
+.ftags{display:flex;gap:6px;flex-wrap:wrap;margin-top:16px}
+.ftag{font-size:0.63rem;font-weight:600;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,0.06);color:var(--muted);border:1px solid rgba(255,255,255,0.09);letter-spacing:0.03em}
+
+/* ── HOW ── */
+.howsec{padding:108px 0;background:rgba(255,255,255,0.01)}
+.howg{display:grid;grid-template-columns:1fr 1fr;gap:76px;align-items:center}
+.steps{display:flex;flex-direction:column;gap:26px;margin-top:40px}
+.step{display:flex;gap:16px;align-items:flex-start}
+.snum{flex-shrink:0;width:33px;height:33px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:0.8rem;font-weight:800}
+.india-page .snum{background:rgba(255,153,51,0.15);border:1px solid rgba(255,153,51,0.4);color:#ff9933}
+.usa-page .snum{background:rgba(60,59,110,0.3);border:1px solid rgba(100,100,200,0.4);color:#a0a8ff}
+.sc h4{font-family:'Syne',sans-serif;font-size:0.93rem;font-weight:700;margin-bottom:4px}
+.sc p{color:var(--muted);font-size:0.83rem;line-height:1.65;font-weight:300}
+.fviz{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px}
+.fvt{font-family:'Syne',sans-serif;font-size:0.86rem;font-weight:700;margin-bottom:14px}
+.fitems{display:flex;flex-direction:column;gap:9px}
+.fi{display:flex;align-items:flex-start;gap:11px;background:rgba(255,255,255,0.03);border-radius:8px;padding:11px 13px;border-left:3px solid}
+.fi.fhi{border-color:var(--red)} .fi.fmd{border-color:var(--amber)} .fi.flo{border-color:var(--teal)}
+.fii{font-size:0.88rem;flex-shrink:0;margin-top:1px}
+.fit{font-size:0.64rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px}
+.fit.hi{color:var(--red)} .fit.md{color:var(--amber)} .fit.lo{color:var(--teal)}
+.fid{font-size:0.77rem;color:rgba(255,255,255,0.65);font-weight:300}
+.fip{font-size:0.64rem;color:var(--muted);margin-top:3px}
+
+/* ── ANALYTICS ── */
+.asec{padding:108px 0}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:center}
+.astats{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:34px}
+.astat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;transition:border-color 0.2s}
+.india-page .astat:hover{border-color:rgba(255,153,51,0.3)}
+.usa-page .astat:hover{border-color:rgba(100,100,200,0.3)}
+.aico{font-size:1.25rem;margin-bottom:9px}
+.aval{font-family:'Syne',sans-serif;font-size:1.35rem;font-weight:800;margin-bottom:3px}
+.albl{font-size:0.73rem;color:var(--muted);font-weight:300}
+.amock{display:flex;flex-direction:column;gap:13px}
+.cbox{background:var(--card);border:1px solid var(--border);border-radius:13px;padding:20px}
+.cttl{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:13px;font-weight:600}
+.bars{display:flex;align-items:flex-end;gap:5px;height:68px}
+.bar{flex:1;border-radius:4px 4px 0 0}
+.blbs{display:flex;gap:5px;margin-top:5px}
+.blb{flex:1;text-align:center;font-size:0.6rem;color:var(--muted)}
+.vlist{display:flex;flex-direction:column;gap:8px}
+.vrow{display:flex;align-items:center;gap:9px}
+.vnm{width:148px;font-size:0.74rem;color:rgba(255,255,255,0.7);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vbw{flex:1;height:5px;background:rgba(255,255,255,0.07);border-radius:3px;overflow:hidden}
+.vb{height:100%;border-radius:3px}
+.va{font-size:0.72rem;color:var(--muted);width:56px;text-align:right;font-family:'Syne',sans-serif}
+
+/* ── API ── */
+.apisec{padding:108px 0;background:rgba(255,255,255,0.01)}
+.apig{display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:center}
+.codeblock{background:#0d1117;border:1px solid rgba(255,255,255,0.08);border-radius:13px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.codehdr{background:rgba(255,255,255,0.04);padding:9px 17px;display:flex;align-items:center;gap:6px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.clang{font-size:0.68rem;color:var(--muted);margin-left:auto}
+pre{padding:20px;font-size:0.76rem;line-height:1.85;overflow-x:auto;font-family:'Courier New',monospace}
+.kw{color:#ff79c6}.str{color:#f1fa8c}.vr{color:#8be9fd}.fn{color:#50fa7b}.cm{color:#6272a4;font-style:italic}.nm{color:#bd93f9}
+.apifeats{margin-top:34px;display:flex;flex-direction:column;gap:13px}
+.apif{display:flex;align-items:center;gap:11px}
+.afic{width:29px;height:29px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:0.82rem;flex-shrink:0}
+.india-page .afic{background:rgba(255,153,51,0.12);border:1px solid rgba(255,153,51,0.25)}
+.usa-page .afic{background:rgba(60,59,110,0.25);border:1px solid rgba(100,100,200,0.25)}
+.aft strong{display:block;font-size:0.85rem;font-weight:600;margin-bottom:1px}
+.aft span{font-size:0.78rem;color:var(--muted);font-weight:300}
+
+/* ── PRICING ── */
+.psec{padding:108px 0}
+.phdr{text-align:center;margin-bottom:60px}
+.phdr .ssub{margin:0 auto}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px 26px;transition:all 0.3s;position:relative}
+.pcard:hover{transform:translateY(-4px)}
+.india-page .pcard.feat{background:rgba(255,153,51,0.08);border-color:rgba(255,153,51,0.35);box-shadow:0 0 56px rgba(255,153,51,0.1)}
+.usa-page .pcard.feat{background:rgba(60,59,110,0.2);border-color:rgba(100,100,200,0.4);box-shadow:0 0 56px rgba(60,59,110,0.2)}
+.fbadge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-size:0.65rem;font-weight:700;padding:3px 13px;border-radius:100px;letter-spacing:0.06em;text-transform:uppercase;color:#fff}
+.india-page .fbadge{background:linear-gradient(135deg,#ff9933,#e07b00)}
+.usa-page .fbadge{background:linear-gradient(135deg,#3c3b6e,#b22234)}
+.pname{font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:9px}
+.pprice{font-family:'Syne',sans-serif;font-size:2.1rem;font-weight:800;margin-bottom:4px}
+.pprice sup{font-size:0.9rem;vertical-align:top;margin-top:5px}
+.pprice small{font-size:0.82rem;font-weight:400;color:var(--muted)}
+.pdesc{font-size:0.82rem;color:var(--muted);margin-bottom:22px;font-weight:300;line-height:1.6}
+.plist{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:26px}
+.plist li{display:flex;gap:8px;font-size:0.83rem;font-weight:300}
+.ck{flex-shrink:0}
+.india-page .ck{color:var(--in-saffron)}
+.usa-page .ck{color:#8b90ff}
+.pbtn{width:100%;padding:11px;border-radius:9px;border:none;font-size:0.88rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s}
+.pbtn.solid{color:#fff}
+.india-page .pbtn.solid{background:linear-gradient(135deg,#ff9933,#e07b00)}
+.usa-page .pbtn.solid{background:linear-gradient(135deg,#3c3b6e,#b22234)}
+.pbtn.outline{background:transparent;color:var(--white);border:1px solid rgba(255,255,255,0.2)}
+.pbtn.outline:hover{background:rgba(255,255,255,0.05)}
+.pbtn.solid:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+
+/* ── CTA ── */
+.ctasec{padding:88px 0}
+.ctabox{border-radius:24px;padding:60px;text-align:center;position:relative;overflow:hidden}
+.india-page .ctabox{background:linear-gradient(135deg,rgba(255,153,51,0.14),rgba(19,136,8,0.07));border:1px solid rgba(255,153,51,0.25)}
+.usa-page .ctabox{background:linear-gradient(135deg,rgba(60,59,110,0.22),rgba(178,34,52,0.1));border:1px solid rgba(60,59,110,0.4)}
+.ctabox h2{font-size:clamp(1.7rem,3.5vw,2.7rem);margin-bottom:14px}
+.ctabox p{color:var(--muted);font-size:0.97rem;max-width:460px;margin:0 auto 34px;font-weight:300}
+.ctabtns{display:flex;gap:13px;justify-content:center;flex-wrap:wrap}
+
+/* ── FOOTER ── */
+.sfooter{border-top:1px solid var(--border);padding:40px 60px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.fcopy{font-size:0.76rem;color:var(--muted);font-weight:300}
+.flinks{display:flex;gap:22px}
+.flinks a{font-size:0.76rem;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.flinks a:hover{color:var(--white)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity 0.62s ease,transform 0.62s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.1s}.rd2{transition-delay:.2s}.rd3{transition-delay:.3s}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .snav{padding:13px 18px}.snav-links{display:none}
+  .hero{padding:88px 18px 56px}
+  .hgrid,.howg,.apig,.agrid{grid-template-columns:1fr}
+  .hvisual{display:none}
+  .si{padding:0 18px}
+  .fgrid{grid-template-columns:1fr}
+  .pgrid{grid-template-columns:1fr}
+  .ctabox{padding:36px 20px}
+  .sfooter{flex-direction:column;gap:18px;text-align:center;padding:32px 18px}
+}
+</style>
+</head>
+<body class="picker">
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- ══════════════════════════════
+     PICKER PAGE
+══════════════════════════════ -->
+<div id="picker-page" class="page active">
+  <section id="picker-page-inner" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1;padding:40px 24px">
+    <div class="pk-logo">TechFin<span>Lens</span></div>
+    <h1 class="pk-h1">AI-powered invoice intelligence.<br>Built for your market.</h1>
+    <p class="pk-sub">TechFinLens is tailored for Indian GST compliance and US AP workflows. Select your region to experience the platform built for you.</p>
+    <div class="pk-cards">
+      <div class="pk-card usa-c" onclick="goTo('usa')">
+        <div class="pk-flag">🇺🇸</div>
+        <div class="pk-country">United States</div>
+        <div class="pk-tagline">USD invoices · AP automation · QuickBooks &amp; NetSuite integrations · SOX-ready</div>
+        <button class="pk-btn">Explore USA →</button>
+      </div>
+      <div class="pk-card india-c" onclick="goTo('india')">
+        <div class="pk-flag">🇮🇳</div>
+        <div class="pk-country">India</div>
+        <div class="pk-tagline">GST compliance · INR invoices · CA firm workflows · Tally &amp; SAP integrations</div>
+        <button class="pk-btn">Explore India →</button>
+      </div>
+    </div>
+    <div class="pk-foot">Both regions. One platform. &nbsp;·&nbsp; Powered by Azure Document Intelligence</div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════
+     INDIA PAGE
+══════════════════════════════ -->
+<div id="india-page" class="page india-page">
+  <nav class="snav">
+    <span class="snav-logo" onclick="goTo('picker')">TechFin<span>Lens</span></span>
+    <div class="snav-mid"><span style="font-size:1.1rem">🇮🇳</span><span class="cbadge india-badge">India</span></div>
+    <div class="snav-links">
+      <a href="#in-feat">Features</a><a href="#in-how">How It Works</a>
+      <a href="#in-api">API</a><a href="#in-price">Pricing</a>
+    </div>
+    <button class="switch-btn" onclick="goTo('usa')">Switch to 🇺🇸 USA</button>
+    <button class="ncta">Start Free Trial</button>
+  </nav>
+
+  <section class="hero sec">
+    <div class="hgrid">
+      <div>
+        <div class="hbadge"><span class="bdot"></span> 10 Detection Rules · GST-Native · Built for India</div>
+        <h1>Stop paying bills that <em>fail compliance</em></h1>
+        <p class="hsub">TechFinLens detects GST violations, duplicate vendor bills, IFSC bank-change fraud, and invoice-splitting in your AP pipeline — automatically, in ~12 seconds. Built for Indian CA firms and mid-market businesses.</p>
+        <div class="cta-row"><button class="btn-p">Start Free Trial →</button><button class="btn-o">Book a Demo</button></div>
+        <div class="hstats">
+          <div class="hstat"><div class="hsnum">~12s</div><div class="hslabel">Per invoice analysis</div></div>
+          <div class="hstat"><div class="hsnum">10</div><div class="hslabel">Detection rules</div></div>
+          <div class="hstat"><div class="hsnum">Live</div><div class="hslabel">GSTIN portal check</div></div>
+          <div class="hstat"><div class="hsnum">5</div><div class="hslabel">Risk tiers</div></div>
+        </div>
+      </div>
+      <div class="hvisual">
+        <div class="fc fc1">
+          <div class="fcl">Anomaly Detected</div>
+          <div class="fcv" style="color:var(--amber)">⚠ No PO Linked</div>
+          <div class="fcn">Score: HIGH · Aero Freight Pvt Ltd</div>
+        </div>
+        <div class="dmock">
+          <div class="dtop">
+            <div class="dot" style="background:#ff5f57"></div>
+            <div class="dot" style="background:#febc2e"></div>
+            <div class="dot" style="background:#28c840"></div>
+            <span class="dtitle">TechFinLens · Dashboard 🇮🇳</span>
+          </div>
+          <div class="dbody">
+            <div class="krow">
+              <div class="kpi"><div class="kl">Total</div><div class="kv">12</div></div>
+              <div class="kpi"><div class="kl">Flagged</div><div class="kv" style="color:var(--amber)">3</div></div>
+              <div class="kpi"><div class="kl">High Risk</div><div class="kv" style="color:var(--red)">1</div></div>
+            </div>
+            <div class="ilist">
+              <div class="irow"><span class="ivend">Aero Freight Pvt Ltd</span><span class="rpill rmed">Medium</span><span class="iamt" style="color:var(--amber)">₹48,500</span></div>
+              <div class="irow"><span class="ivend">Meridian Supply Co.</span><span class="rpill rpend">Pending</span><span class="iamt" style="color:#8b90ff">₹12,750</span></div>
+              <div class="irow"><span class="ivend">Cornerstone Logistics</span><span class="rpill rok">Approved</span><span class="iamt" style="color:var(--teal)">₹1,08,000</span></div>
+              <div class="irow"><span class="ivend">Pinnacle IT Services</span><span class="rpill rok">Approved</span><span class="iamt" style="color:var(--teal)">₹22,300</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="fc fc2">
+          <div class="fcl">GST Anomaly</div>
+          <div class="fcv" style="color:var(--red)">⛔ GSTIN Mismatch</div>
+          <div class="fcn">State code doesn't match billing address</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mqwrap sec">
+    <div class="mqtrack">
+      <span class="mqi">📄 Manual Upload</span><span class="mqi">🔌 API Integration</span><span class="mqi">📊 Spreadsheet / CSV</span><span class="mqi">📧 Email Ingestion</span><span class="mqi">🏪 Supplier Portal</span><span class="mqi">🇮🇳 GSTIN Live Validation</span><span class="mqi">🔍 Duplicate Detection</span><span class="mqi">🏦 Tally Integration</span><span class="mqi">⚡ Azure AI</span><span class="mqi">🏢 CA Firm Multi-tenant</span><span class="mqi">💰 INR Native</span><span class="mqi">📋 Audit Trail</span>
+      <span class="mqi">📄 Manual Upload</span><span class="mqi">🔌 API Integration</span><span class="mqi">📊 Spreadsheet / CSV</span><span class="mqi">📧 Email Ingestion</span><span class="mqi">🏪 Supplier Portal</span><span class="mqi">🇮🇳 GSTIN Live Validation</span><span class="mqi">🔍 Duplicate Detection</span><span class="mqi">🏦 Tally Integration</span><span class="mqi">⚡ Azure AI</span><span class="mqi">🏢 CA Firm Multi-tenant</span><span class="mqi">💰 INR Native</span><span class="mqi">📋 Audit Trail</span>
+    </div>
+  </div>
+
+  <section id="in-feat" class="fsec sec">
+    <div class="si">
+      <div class="fhdr reveal"><div class="slabel">Core Capabilities — India</div><h2>10 layers of detection — <em>GST-native</em></h2><p class="ssub">Built for GST-era India. Same 10-rule engine as the US platform — with India-specific checks: live GSTIN portal validation, CGST/SGST/IGST arithmetic, IFSC bank change detection, and CA firm multi-tenant workflows.</p></div>
+      <div class="fgrid">
+        <div class="fcard reveal"><div class="fico">🇮🇳</div><h3>Live GSTIN Validation</h3><p>Checks GSTIN format (15-char checksum), validates active status directly against the government GST portal API, verifies CGST + SGST / IGST calculations, and flags invalid state codes.</p><div class="ftags"><span class="ftag">Live API</span><span class="ftag">CGST/SGST</span><span class="ftag">IGST</span><span class="ftag">State Code</span></div></div>
+        <div class="fcard reveal rd1"><div class="fico">🔍</div><h3>Duplicate &amp; PO Detection</h3><p>4-method duplicate check (file hash, vendor + invoice number, fuzzy amount/date, near-duplicate line items). PO validation flags no-PO, cancelled POs, and invoices exceeding PO budget.</p><div class="ftags"><span class="ftag">4 Methods</span><span class="ftag">PO Budget</span><span class="ftag">50 pts CRITICAL</span></div></div>
+        <div class="fcard reveal rd2"><div class="fico">🏦</div><h3>Bank Account Change Alert</h3><p>Flags invoices arriving after a vendor's IFSC code or bank account changed within 90 days — the classic payment-redirect fraud pattern prevalent in India.</p><div class="ftags"><span class="ftag">IFSC Check</span><span class="ftag">90-Day Window</span><span class="ftag">HIGH 15 pts</span></div></div>
+        <div class="fcard reveal"><div class="fico">🏢</div><h3>CA Firm Multi-tenant</h3><p>Manage multiple client companies from one dashboard with fully isolated data schemas. Each client sees only their invoices, flags, and analytics. Built for Indian CA practices.</p><div class="ftags"><span class="ftag">Multi-client</span><span class="ftag">RBAC</span><span class="ftag">Isolated schemas</span></div></div>
+        <div class="fcard reveal rd1"><div class="fico">⚡</div><h3>Velocity &amp; Amount Outlier</h3><p>Catches invoice-splitting schemes (multiple invoices just under approval limits) and statistically inflated bills using Z-score analysis per vendor — with ₹-aware thresholds.</p><div class="ftags"><span class="ftag">Z-Score</span><span class="ftag">₹50K threshold</span><span class="ftag">Splitting</span></div></div>
+        <div class="fcard reveal rd2"><div class="fico">🤖</div><h3>AI Legitimacy Layer</h3><p>GPT-4o reads every invoice to verify math (qty × price = total), GST rates, field completeness, date logic, and description plausibility — catching subtle fraud rules miss.</p><div class="ftags"><span class="ftag">GPT-4o</span><span class="ftag">Math Check</span><span class="ftag">INR Logic</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="in-how" class="howsec sec">
+    <div class="si">
+      <div class="howg">
+        <div class="reveal">
+          <div class="slabel">How It Works</div>
+          <h2>From vendor bill to <em>approval</em> in ~12 seconds</h2>
+          <p class="ssub">TechFinLens fits into your existing AP workflow — forward an email, upload a PDF, bulk CSV, or push via API. No rip-and-replace needed.</p>
+          <div class="steps">
+            <div class="step"><div class="snum">1</div><div class="sc"><h4>Upload &amp; Extract</h4><p>Submit via manual upload, API, spreadsheet/CSV, email ingestion, or supplier portal. Azure Document Intelligence extracts vendor, amount, GSTIN, HSN code, PO number, and payment terms automatically.</p></div></div>
+            <div class="step"><div class="snum">2</div><div class="sc"><h4>Analyze &amp; Score</h4><p>10 checks run in parallel: live GSTIN portal validation, CGST/SGST/IGST arithmetic, duplicate detection, PO matching, IFSC bank-change alert, velocity, outlier, and GPT-4o legitimacy — risk score in ~12 seconds.</p></div></div>
+            <div class="step"><div class="snum">3</div><div class="sc"><h4>Route &amp; Act</h4><p>Clean invoices (0 pts) auto-approve. Risky ones route to the right approver — your CA or finance head. CRITICAL issues are auto-held. Full audit trail retained for every decision.</p></div></div>
+          </div>
+        </div>
+        <div class="reveal rd2">
+          <div class="fviz">
+            <div class="fvt">🚩 Flagged Invoice — Aero Freight Pvt Ltd · ₹48,500</div>
+            <div class="fitems">
+              <div class="fi fhi"><div class="fii">⛔</div><div><div class="fit hi">No PO Linked</div><div class="fid">Invoice submitted with no corresponding Purchase Order on record</div><div class="fip">Score: +20 pts</div></div></div>
+              <div class="fi fmd"><div class="fii">🇮🇳</div><div><div class="fit md">GST Mismatch</div><div class="fid">Vendor GSTIN state code doesn't match billing address state</div><div class="fip">Score: +15 pts</div></div></div>
+              <div class="fi fmd"><div class="fii">🏢</div><div><div class="fit md">New Vendor</div><div class="fid">First invoice from this vendor — no prior transaction history</div><div class="fip">Score: +10 pts</div></div></div>
+              <div class="fi flo"><div class="fii">✅</div><div><div class="fit lo">Duplicate Check Passed</div><div class="fid">No matching invoice found in the last 90 days</div><div class="fip">No points added</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="asec sec">
+    <div class="si">
+      <div class="agrid">
+        <div class="reveal">
+          <div class="slabel">Spend Analytics</div>
+          <h2>Full AP visibility — <em>not just approvals</em></h2>
+          <p class="ssub">Track spend in ₹ across vendors, months, and categories. Overdue alerts, vendor concentration risk, and payment status — all in one dashboard.</p>
+          <div class="astats">
+            <div class="astat"><div class="aico">📈</div><div class="aval">₹2.1L+</div><div class="albl">Tracked spend, last 3 months</div></div>
+            <div class="astat"><div class="aico">🏢</div><div class="aval">8</div><div class="albl">Active vendors monitored</div></div>
+            <div class="astat"><div class="aico">⏱️</div><div class="aval">0</div><div class="albl">Overdue invoices</div></div>
+            <div class="astat"><div class="aico">✅</div><div class="aval">72%</div><div class="albl">Paid on time</div></div>
+          </div>
+        </div>
+        <div class="reveal rd1">
+          <div class="amock">
+            <div class="cbox">
+              <div class="cttl">Monthly Spend — INR</div>
+              <div class="bars">
+                <div class="bar" style="height:70%;background:linear-gradient(to top,#ff9933,#ffcc66)"></div>
+                <div class="bar" style="height:45%;background:linear-gradient(to top,#138808,#4caf50)"></div>
+                <div class="bar" style="height:88%;background:linear-gradient(to top,#ff9933,#ffcc66)"></div>
+                <div class="bar" style="height:58%;background:linear-gradient(to top,#138808,#4caf50)"></div>
+              </div>
+              <div class="blbs"><div class="blb">Feb</div><div class="blb">Mar</div><div class="blb">Apr</div><div class="blb">May</div></div>
+            </div>
+            <div class="cbox">
+              <div class="cttl">Top Vendors by Spend</div>
+              <div class="vlist">
+                <div class="vrow"><span class="vnm">Cornerstone Logistics</span><div class="vbw"><div class="vb" style="width:100%;background:#ff9933"></div></div><span class="va">₹1.08L</span></div>
+                <div class="vrow"><span class="vnm">Aero Freight Pvt Ltd</span><div class="vbw"><div class="vb" style="width:45%;background:#138808"></div></div><span class="va">₹48.5K</span></div>
+                <div class="vrow"><span class="vnm">Pinnacle IT Services</span><div class="vbw"><div class="vb" style="width:21%;background:var(--blue2)"></div></div><span class="va">₹22.3K</span></div>
+                <div class="vrow"><span class="vnm">Meridian Supply Co.</span><div class="vbw"><div class="vb" style="width:12%;background:var(--muted)"></div></div><span class="va">₹12.7K</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="in-api" class="apisec sec">
+    <div class="si">
+      <div class="apig">
+        <div class="reveal">
+          <div class="codeblock">
+            <div class="codehdr">
+              <div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>
+              <span class="clang">Python · TechFinLens India API</span>
+            </div>
+<pre><span class="cm"># Submit a GST invoice for anomaly analysis</span>
+<span class="kw">import</span> <span class="vr">requests</span>
+
+<span class="vr">response</span> = <span class="vr">requests</span>.<span class="fn">post</span>(
+  <span class="str">"https://api.techfinlens.ai/v1/invoices"</span>,
+  headers={<span class="str">"Authorization"</span>: <span class="str">f"Bearer {API_KEY}"</span>},
+  json={
+    <span class="str">"vendor_id"</span>: <span class="str">"VND-IN-0042"</span>,
+    <span class="str">"invoice_number"</span>: <span class="str">"AF/2024-25/0987"</span>,
+    <span class="str">"amount"</span>: <span class="nm">48500.00</span>,
+    <span class="str">"currency"</span>: <span class="str">"INR"</span>,
+    <span class="str">"gstin"</span>: <span class="str">"29ABCDE1234F1Z5"</span>,
+    <span class="str">"invoice_date"</span>: <span class="str">"2024-02-24"</span>
+  }
+)
+<span class="cm"># → { "risk_level": "MEDIUM",</span>
+<span class="cm">#     "anomaly_score": 45,</span>
+<span class="cm">#     "flags": ["NO_PO","GST_MISMATCH","NEW_VENDOR"],</span>
+<span class="cm">#     "gst_valid": false }</span></pre>
+          </div>
+        </div>
+        <div class="reveal rd1">
+          <div class="slabel">Developer API</div>
+          <h2>Embed invoice intelligence into your <em>ERP or Tally</em></h2>
+          <p class="ssub">Connect TechFinLens to Tally, SAP Business One, Zoho Books, or any custom ERP via our clean REST API.</p>
+          <div class="apifeats">
+            <div class="apif"><div class="afic">⚡</div><div class="aft"><strong>Real-time scoring</strong><span>Anomaly results in &lt;3 seconds per invoice</span></div></div>
+            <div class="apif"><div class="afic">🇮🇳</div><div class="aft"><strong>GST-aware responses</strong><span>GSTIN validity, HSN match, and state code checks in every response</span></div></div>
+            <div class="apif"><div class="afic">🔗</div><div class="aft"><strong>Webhook support</strong><span>Push flag alerts to Slack, WhatsApp Business, or your own endpoint</span></div></div>
+            <div class="apif"><div class="afic">🏢</div><div class="aft"><strong>Multi-tenant for CA firms</strong><span>Isolated schemas per client — manage 50+ companies from one API key</span></div></div>
+            <div class="apif"><div class="afic">🔐</div><div class="aft"><strong>Azure-hosted, India region</strong><span>Data residency in Azure India Central available on Enterprise plan</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="in-price" class="psec sec">
+    <div class="si">
+      <div class="phdr reveal"><div class="slabel">Pricing — India</div><h2>Transparent pricing for <em>every Indian business</em></h2><p class="ssub" style="margin:0 auto">Start free. Scale with your invoice volumes. Every plan includes GST compliance checks and API access.</p></div>
+      <div class="pgrid">
+        <div class="pcard reveal"><div class="pname">Starter</div><div class="pprice"><sup>₹</sup>0<small>/month</small></div><div class="pdesc">For small businesses and solo CA professionals testing AP automation.</div><ul class="plist"><li><span class="ck">✓</span> 100 invoices/month</li><li><span class="ck">✓</span> GST compliance checks</li><li><span class="ck">✓</span> Duplicate detection</li><li><span class="ck">✓</span> PDF &amp; image upload</li><li><span class="ck">✓</span> 500 API calls/month</li><li><span class="ck">✓</span> INR native support</li></ul><button class="pbtn outline">Start Free</button></div>
+        <div class="pcard feat reveal rd1"><div class="fbadge">Most Popular</div><div class="pname">Growth</div><div class="pprice"><sup>₹</sup>2,999<small>/month</small></div><div class="pdesc">For growing businesses and CA firms managing multiple client accounts.</div><ul class="plist"><li><span class="ck">✓</span> 1,000 invoices/month</li><li><span class="ck">✓</span> Full anomaly suite (5 types)</li><li><span class="ck">✓</span> GST + GSTIN + HSN validation</li><li><span class="ck">✓</span> Bulk Excel upload</li><li><span class="ck">✓</span> 2,000 API calls/month</li><li><span class="ck">✓</span> Spend Analytics dashboard</li><li><span class="ck">✓</span> Approval workflows + RBAC</li><li><span class="ck">✓</span> Weekly email reports</li></ul><button class="pbtn solid">Get Started →</button></div>
+        <div class="pcard reveal rd2"><div class="pname">Enterprise</div><div class="pprice">Custom</div><div class="pdesc">For CA firms with 20+ clients or businesses with high invoice volumes and ERP needs.</div><ul class="plist"><li><span class="ck">✓</span> Unlimited invoices</li><li><span class="ck">✓</span> Multi-tenant (CA firm mode)</li><li><span class="ck">✓</span> Tally / SAP B1 / Zoho connectors</li><li><span class="ck">✓</span> Custom anomaly rules</li><li><span class="ck">✓</span> India data residency</li><li><span class="ck">✓</span> Priority support + SLA</li></ul><button class="pbtn outline">Contact Sales</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ctasec sec"><div class="si"><div class="ctabox reveal"><h2>Stop paying bills that <em>shouldn't be paid</em></h2><p>TechFinLens catches GST fraud, duplicates, and compliance violations before they hit your books. Set up in minutes.</p><div class="ctabtns"><button class="btn-p">Start Free Trial →</button><button class="btn-o">Book a Demo</button></div></div></div></section>
+
+  <footer class="sfooter">
+    <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;cursor:pointer" onclick="goTo('picker')">TechFinLens 🇮🇳</span>
+    <div class="fcopy">© 2026 TechFinLens · AI-Powered AP Automation for India</div>
+    <div class="flinks"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">API Docs</a><a href="#">Contact</a></div>
+  </footer>
+</div><!-- /india-page -->
+
+<!-- ══════════════════════════════
+     USA PAGE
+══════════════════════════════ -->
+<div id="usa-page" class="page usa-page">
+  <nav class="snav">
+    <span class="snav-logo" onclick="goTo('picker')">TechFin<span>Lens</span></span>
+    <div class="snav-mid"><span style="font-size:1.1rem">🇺🇸</span><span class="cbadge usa-badge">United States</span></div>
+    <div class="snav-links">
+      <a href="#us-feat">Features</a><a href="#us-how">How It Works</a>
+      <a href="#us-api">API</a><a href="#us-price">Pricing</a>
+    </div>
+    <button class="switch-btn" onclick="goTo('india')">Switch to 🇮🇳 India</button>
+    <button class="ncta">Start Free Trial</button>
+  </nav>
+
+  <section class="hero sec">
+    <div class="hgrid">
+      <div>
+        <div class="hbadge"><span class="bdot"></span> 10 Detection Rules · Built for US Mid-Market</div>
+        <h1>Stop invoice fraud <em>before it costs you</em></h1>
+        <p class="hsub">TechFinLens automatically scans every invoice in ~12 seconds, flags anomalies across 10 detection layers, and routes risky payments for review — so your finance team only touches what matters. Built for US businesses $20M–$200M.</p>
+        <div class="cta-row"><button class="btn-p">Start Free Trial →</button><button class="btn-o">Request a Demo</button></div>
+        <div class="hstats">
+          <div class="hstat"><div class="hsnum">~12s</div><div class="hslabel">Per invoice analysis</div></div>
+          <div class="hstat"><div class="hsnum">10</div><div class="hslabel">Detection rules</div></div>
+          <div class="hstat"><div class="hsnum">5</div><div class="hslabel">Risk tiers</div></div>
+          <div class="hstat"><div class="hsnum">50</div><div class="hslabel">States tax coverage</div></div>
+        </div>
+      </div>
+      <div class="hvisual">
+        <div class="fc fc1">
+          <div class="fcl">Anomaly Detected</div>
+          <div class="fcv" style="color:var(--red)">⛔ Duplicate Invoice</div>
+          <div class="fcn">Score: HIGH · Apex Consulting Group</div>
+        </div>
+        <div class="dmock">
+          <div class="dtop">
+            <div class="dot" style="background:#ff5f57"></div>
+            <div class="dot" style="background:#febc2e"></div>
+            <div class="dot" style="background:#28c840"></div>
+            <span class="dtitle">TechFinLens · Dashboard 🇺🇸</span>
+          </div>
+          <div class="dbody">
+            <div class="krow">
+              <div class="kpi"><div class="kl">Total</div><div class="kv">18</div></div>
+              <div class="kpi"><div class="kl">Flagged</div><div class="kv" style="color:var(--amber)">4</div></div>
+              <div class="kpi"><div class="kl">High Risk</div><div class="kv" style="color:var(--red)">2</div></div>
+            </div>
+            <div class="ilist">
+              <div class="irow"><span class="ivend">Apex Consulting Group</span><span class="rpill rhi">High</span><span class="iamt" style="color:var(--red)">$8,400</span></div>
+              <div class="irow"><span class="ivend">Nexus Office Supplies</span><span class="rpill rpend">Pending</span><span class="iamt" style="color:#8b90ff">$1,025</span></div>
+              <div class="irow"><span class="ivend">BlueStar Freight LLC</span><span class="rpill rok">Approved</span><span class="iamt" style="color:var(--teal)">$14,750</span></div>
+              <div class="irow"><span class="ivend">Ironclad Facilities Inc.</span><span class="rpill rok">Approved</span><span class="iamt" style="color:var(--teal)">$2,912</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="fc fc2">
+          <div class="fcl">Velocity Alert</div>
+          <div class="fcv" style="color:var(--amber)">⚡ 3 invoices in 24h</div>
+          <div class="fcn">Apex Consulting · unusual frequency</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="mqwrap sec">
+    <div class="mqtrack">
+      <span class="mqi">📄 PDF Invoices</span><span class="mqi">🇺🇸 SOX Audit Trail</span><span class="mqi">📧 Email Forwarding</span><span class="mqi">📊 Bulk Excel</span><span class="mqi">🔍 Duplicate Detection</span><span class="mqi">💼 QuickBooks Integration</span><span class="mqi">✏️ Manual Entry</span><span class="mqi">🔌 REST API</span><span class="mqi">📷 Camera Capture</span><span class="mqi">⚡ Azure AI</span><span class="mqi">🏦 NetSuite / SAP</span><span class="mqi">💵 USD Native</span>
+      <span class="mqi">📄 PDF Invoices</span><span class="mqi">🇺🇸 SOX Audit Trail</span><span class="mqi">📧 Email Forwarding</span><span class="mqi">📊 Bulk Excel</span><span class="mqi">🔍 Duplicate Detection</span><span class="mqi">💼 QuickBooks Integration</span><span class="mqi">✏️ Manual Entry</span><span class="mqi">🔌 REST API</span><span class="mqi">📷 Camera Capture</span><span class="mqi">⚡ Azure AI</span><span class="mqi">🏦 NetSuite / SAP</span><span class="mqi">💵 USD Native</span>
+    </div>
+  </div>
+
+  <section id="us-feat" class="fsec sec">
+    <div class="si">
+      <div class="fhdr reveal"><div class="slabel">Core Capabilities — United States</div><h2>10 layers of detection — <em>every invoice</em></h2><p class="ssub">Each invoice passes through all 10 checks in parallel. Anomalies accumulate a risk score; the total determines the approval workflow automatically.</p></div>
+      <div class="fgrid">
+        <div class="fcard reveal"><div class="fico">🔍</div><h3>Duplicate Invoice Detection</h3><p>50-point CRITICAL check using exact file hash, vendor + invoice number, and fuzzy amount/date matching across 4 methods. Stops double-payment fraud cold.</p><div class="ftags"><span class="ftag">4 Methods</span><span class="ftag">Fuzzy Match</span><span class="ftag">50 pts</span></div></div>
+        <div class="fcard reveal rd1"><div class="fico">📦</div><h3>PO Validation &amp; Tax Compliance</h3><p>Verifies PO references, flags over-budget or cancelled POs, validates EIN format, W-9/1099 thresholds, and sales tax rates across all 50 US states.</p><div class="ftags"><span class="ftag">PO Match</span><span class="ftag">EIN</span><span class="ftag">50-State Tax</span></div></div>
+        <div class="fcard reveal rd2"><div class="fico">🏦</div><h3>Bank Account Change Alert</h3><p>Flags invoices arriving after a vendor's banking details changed within 90 days — catching the classic payment-redirect fraud pattern before any wire goes out.</p><div class="ftags"><span class="ftag">90-Day Window</span><span class="ftag">Payment Fraud</span><span class="ftag">HIGH</span></div></div>
+        <div class="fcard reveal"><div class="fico">⚡</div><h3>Velocity &amp; Splitting Detection</h3><p>Catches invoice-splitting schemes: multiple invoices just under approval limits, or unusually high submission volume from a single vendor in a short window.</p><div class="ftags"><span class="ftag">Splitting</span><span class="ftag">Velocity</span><span class="ftag">Approval Limits</span></div></div>
+        <div class="fcard reveal rd1"><div class="fico">📋</div><h3>SOX Audit Trail</h3><p>Every review, approval, rejection, and comment is timestamped and immutably logged with reviewer identity. Built for internal audit, external review, and SOX compliance.</p><div class="ftags"><span class="ftag">SOX</span><span class="ftag">Immutable log</span><span class="ftag">RBAC</span></div></div>
+        <div class="fcard reveal rd2"><div class="fico">🤖</div><h3>AI Legitimacy Layer</h3><p>Beyond 10 rule-based checks, every invoice is independently assessed by our enterprise AI engine — verifying math, date logic, field completeness, and description plausibility.</p><div class="ftags"><span class="ftag">AI Scoring</span><span class="ftag">Math Check</span><span class="ftag">Fraud Signal</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="us-how" class="howsec sec">
+    <div class="si">
+      <div class="howg">
+        <div class="reveal">
+          <div class="slabel">How It Works</div>
+          <h2>From vendor invoice to <em>GL-ready</em> in seconds</h2>
+          <p class="ssub">TechFinLens plugs into your existing AP workflow — email, upload, or API. No rip-and-replace of your ERP needed.</p>
+          <div class="steps">
+            <div class="step"><div class="snum">1</div><div class="sc"><h4>Upload &amp; Extract</h4><p>Submit via manual upload, API, spreadsheet/CSV, email ingestion, or dedicated supplier portal. AI extracts vendor details, line items, EIN, sales tax, and payment terms automatically.</p></div></div>
+            <div class="step"><div class="snum">2</div><div class="sc"><h4>Analyze &amp; Score</h4><p>10 rule-based checks run in parallel alongside an AI legitimacy assessment. Each anomaly found adds points to a cumulative risk score from 0 to 100+, in ~12 seconds.</p></div></div>
+            <div class="step"><div class="snum">3</div><div class="sc"><h4>Route &amp; Act</h4><p>The 5-tier risk score determines the workflow automatically: clean invoices self-approve, risky ones route to the right approver, and critical issues are auto-held for executive review.</p></div></div>
+          </div>
+        </div>
+        <div class="reveal rd2">
+          <div class="fviz">
+            <div class="fvt">🚩 Flagged Invoice — Apex Consulting Group · $8,400</div>
+            <div class="fitems">
+              <div class="fi fhi"><div class="fii">⛔</div><div><div class="fit hi">Duplicate Detected</div><div class="fid">Matches a previously paid invoice from 14 days ago — same amount and vendor</div><div class="fip">Score: +35 pts</div></div></div>
+              <div class="fi fhi"><div class="fii">⚡</div><div><div class="fit hi">Velocity Spike</div><div class="fid">3 invoices submitted within 24 hours — unusual for this vendor's history</div><div class="fip">Score: +25 pts</div></div></div>
+              <div class="fi fmd"><div class="fii">📋</div><div><div class="fit md">No PO Linked</div><div class="fid">Invoice references no Purchase Order in the system</div><div class="fip">Score: +20 pts</div></div></div>
+              <div class="fi flo"><div class="fii">✅</div><div><div class="fit lo">Weekend Check Passed</div><div class="fid">Submitted on a Tuesday — no weekend anomaly</div><div class="fip">No points added</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="asec sec">
+    <div class="si">
+      <div class="agrid">
+        <div class="reveal">
+          <div class="slabel">Spend Analytics</div>
+          <h2>Full AP visibility — <em>not just approvals</em></h2>
+          <p class="ssub">Track spend in USD across vendors, time periods, and GL categories. Overdue alerts, vendor concentration risk, and payment timing — all in one dashboard.</p>
+          <div class="astats">
+            <div class="astat"><div class="aico">📈</div><div class="aval">$27K+</div><div class="albl">Tracked spend, last 3 months</div></div>
+            <div class="astat"><div class="aico">🏢</div><div class="aval">12</div><div class="albl">Active vendors monitored</div></div>
+            <div class="astat"><div class="aico">⏱️</div><div class="aval">0</div><div class="albl">Overdue invoices</div></div>
+            <div class="astat"><div class="aico">✅</div><div class="aval">83%</div><div class="albl">Paid on time</div></div>
+          </div>
+        </div>
+        <div class="reveal rd1">
+          <div class="amock">
+            <div class="cbox">
+              <div class="cttl">Monthly Spend — USD</div>
+              <div class="bars">
+                <div class="bar" style="height:55%;background:linear-gradient(to top,#3c3b6e,#6b6bc5)"></div>
+                <div class="bar" style="height:78%;background:linear-gradient(to top,#b22234,#e05566)"></div>
+                <div class="bar" style="height:42%;background:linear-gradient(to top,#3c3b6e,#6b6bc5)"></div>
+                <div class="bar" style="height:95%;background:linear-gradient(to top,#b22234,#e05566)"></div>
+              </div>
+              <div class="blbs"><div class="blb">Feb</div><div class="blb">Mar</div><div class="blb">Apr</div><div class="blb">May</div></div>
+            </div>
+            <div class="cbox">
+              <div class="cttl">Top Vendors by Spend</div>
+              <div class="vlist">
+                <div class="vrow"><span class="vnm">BlueStar Freight LLC</span><div class="vbw"><div class="vb" style="width:100%;background:#3c3b6e"></div></div><span class="va">$14.7K</span></div>
+                <div class="vrow"><span class="vnm">Apex Consulting Group</span><div class="vbw"><div class="vb" style="width:57%;background:#b22234"></div></div><span class="va">$8.4K</span></div>
+                <div class="vrow"><span class="vnm">Ironclad Facilities Inc.</span><div class="vbw"><div class="vb" style="width:20%;background:var(--blue2)"></div></div><span class="va">$2.9K</span></div>
+                <div class="vrow"><span class="vnm">Nexus Office Supplies</span><div class="vbw"><div class="vb" style="width:10%;background:var(--muted)"></div></div><span class="va">$1.0K</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="us-api" class="apisec sec">
+    <div class="si">
+      <div class="apig">
+        <div class="reveal">
+          <div class="codeblock">
+            <div class="codehdr">
+              <div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>
+              <span class="clang">Python · TechFinLens USA API</span>
+            </div>
+<pre><span class="cm"># Submit an invoice for US AP anomaly analysis</span>
+<span class="kw">import</span> <span class="vr">requests</span>
+
+<span class="vr">response</span> = <span class="vr">requests</span>.<span class="fn">post</span>(
+  <span class="str">"https://api.techfinlens.ai/v1/invoices"</span>,
+  headers={<span class="str">"Authorization"</span>: <span class="str">f"Bearer {API_KEY}"</span>},
+  json={
+    <span class="str">"vendor_id"</span>: <span class="str">"VND-US-0088"</span>,
+    <span class="str">"invoice_number"</span>: <span class="str">"INV-2024-0091"</span>,
+    <span class="str">"amount"</span>: <span class="nm">8400.00</span>,
+    <span class="str">"currency"</span>: <span class="str">"USD"</span>,
+    <span class="str">"po_number"</span>: <span class="kw">None</span>,
+    <span class="str">"invoice_date"</span>: <span class="str">"2024-05-13"</span>
+  }
+)
+<span class="cm"># → { "risk_level": "HIGH",</span>
+<span class="cm">#     "anomaly_score": 80,</span>
+<span class="cm">#     "flags": ["DUPLICATE","VELOCITY","NO_PO"],</span>
+<span class="cm">#     "duplicate_of": "INV-2024-0078" }</span></pre>
+          </div>
+        </div>
+        <div class="reveal rd1">
+          <div class="slabel">Developer API</div>
+          <h2>Connect to <em>QuickBooks, NetSuite, SAP</em> in minutes</h2>
+          <p class="ssub">Drop TechFinLens into your US AP stack via REST API. SOX-ready audit logs included on every plan.</p>
+          <div class="apifeats">
+            <div class="apif"><div class="afic">⚡</div><div class="aft"><strong>Real-time scoring</strong><span>Anomaly results in &lt;3 seconds per invoice</span></div></div>
+            <div class="apif"><div class="afic">💼</div><div class="aft"><strong>QuickBooks &amp; NetSuite ready</strong><span>Native connectors push approved invoices directly to your GL</span></div></div>
+            <div class="apif"><div class="afic">🔗</div><div class="aft"><strong>Webhook support</strong><span>Push flag alerts to Slack, Microsoft Teams, or your own endpoint</span></div></div>
+            <div class="apif"><div class="afic">📋</div><div class="aft"><strong>SOX audit log via API</strong><span>Query the full approval trail for any invoice — ideal for audit seasons</span></div></div>
+            <div class="apif"><div class="afic">🔐</div><div class="aft"><strong>Azure-hosted, US data region</strong><span>Data stored in Azure East US / West US on Enterprise plans</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="us-price" class="psec sec">
+    <div class="si">
+      <div class="phdr reveal"><div class="slabel">Pricing — United States</div><h2>Simple pricing for <em>every US business</em></h2><p class="ssub" style="margin:0 auto">Transparent, volume-based pricing. Every plan includes all 10 anomaly detection rules, SOX audit trail, 5-tier risk scoring, and API access.</p></div>
+      <div class="pgrid">
+        <div class="pcard reveal"><div class="pname">Starter</div><div class="pprice"><sup>$</sup>75<small>/month</small></div><div class="pdesc">For small businesses beginning their AP automation journey.</div><ul class="plist"><li><span class="ck">✓</span> 100 invoices/month</li><li><span class="ck">✓</span> All 10 anomaly detection rules</li><li><span class="ck">✓</span> 5-tier risk scoring</li><li><span class="ck">✓</span> PDF &amp; image upload</li><li><span class="ck">✓</span> EIN &amp; 50-state tax validation</li><li><span class="ck">✓</span> SOX audit trail</li><li><span class="ck">✓</span> API access</li></ul><button class="pbtn outline">Get Started →</button></div>
+        <div class="pcard feat reveal rd1"><div class="fbadge">Most Popular</div><div class="pname">Growth</div><div class="pprice"><sup>$</sup>120<small>/month</small></div><div class="pdesc">For mid-market businesses with active vendor relationships and AP teams.</div><ul class="plist"><li><span class="ck">✓</span> 1,000 invoices/month</li><li><span class="ck">✓</span> All 10 anomaly detection rules</li><li><span class="ck">✓</span> Bank account change alerts</li><li><span class="ck">✓</span> Bulk Excel / CSV upload</li><li><span class="ck">✓</span> Spend Analytics dashboard</li><li><span class="ck">✓</span> Approval workflows + RBAC</li><li><span class="ck">✓</span> QuickBooks &amp; NetSuite connectors</li><li><span class="ck">✓</span> Supplier portal</li></ul><button class="pbtn solid">Get Started →</button></div>
+        <div class="pcard reveal rd2"><div class="pname">Enterprise</div><div class="pprice">Custom</div><div class="pdesc">For high-volume AP teams and businesses needing ERP-level integration and custom rules.</div><ul class="plist"><li><span class="ck">✓</span> Unlimited invoices</li><li><span class="ck">✓</span> NetSuite / SAP connectors</li><li><span class="ck">✓</span> Custom anomaly rules &amp; thresholds</li><li><span class="ck">✓</span> US data residency (Azure)</li><li><span class="ck">✓</span> Dedicated API quotas</li><li><span class="ck">✓</span> Priority support + SLA</li></ul><button class="pbtn outline">Contact Sales</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Risk Scoring Section -->
+  <section class="sec" style="padding:88px 0;background:rgba(255,255,255,0.01)">
+    <div class="si">
+      <div class="reveal" style="text-align:center;margin-bottom:48px">
+        <div class="slabel">Risk Classification</div>
+        <h2>Five-tier scoring — <em>zero guesswork</em></h2>
+        <p class="ssub" style="margin:0 auto">Every invoice gets a cumulative risk score from 0–100+. The tier determines the approval workflow automatically — no manual triage needed.</p>
+      </div>
+      <div class="reveal" style="border:1px solid var(--border);border-radius:16px;overflow:hidden">
+        <div style="display:grid;grid-template-columns:110px 120px 1fr 130px;background:rgba(255,255,255,0.04);padding:11px 24px;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;border-bottom:1px solid var(--border)">
+          <span>Risk Level</span><span>Score</span><span>Approval Workflow</span><span>Turnaround</span>
+        </div>
+        <div style="display:grid;grid-template-columns:110px 120px 1fr 130px;padding:14px 24px;border-bottom:1px solid var(--border);align-items:center">
+          <span style="font-size:0.78rem;font-weight:700;color:var(--teal)">● CLEAN</span>
+          <span style="font-size:0.82rem;color:var(--muted)">0 pts</span>
+          <span style="font-size:0.82rem;color:rgba(255,255,255,0.7)">Auto-approved — no human touch required</span>
+          <span style="font-size:0.78rem;color:var(--teal);font-weight:600">Immediate</span>
+        </div>
+        <div style="display:grid;grid-template-columns:110px 120px 1fr 130px;padding:14px 24px;border-bottom:1px solid var(--border);align-items:center">
+          <span style="font-size:0.78rem;font-weight:700;color:#8b90ff">● LOW</span>
+          <span style="font-size:0.82rem;color:var(--muted)">1–14 pts</span>
+          <span style="font-size:0.82rem;color:rgba(255,255,255,0.7)">Manager one-click approval</span>
+          <span style="font-size:0.78rem;color:#8b90ff;font-weight:600">Same day</span>
+        </div>
+        <div style="display:grid;grid-template-columns:110px 120px 1fr 130px;padding:14px 24px;border-bottom:1px solid var(--border);align-items:center">
+          <span style="font-size:0.78rem;font-weight:700;color:var(--amber)">● MEDIUM</span>
+          <span style="font-size:0.82rem;color:var(--muted)">15–29 pts</span>
+          <span style="font-size:0.82rem;color:rgba(255,255,255,0.7)">Senior manager review; possible vendor call</span>
+          <span style="font-size:0.78rem;color:var(--amber);font-weight:600">1–2 days</span>
+        </div>
+        <div style="display:grid;grid-template-columns:110px 120px 1fr 130px;padding:14px 24px;border-bottom:1px solid var(--border);align-items:center">
+          <span style="font-size:0.78rem;font-weight:700;color:#ff8c42">● HIGH</span>
+          <span style="font-size:0.82rem;color:var(--muted)">30–49 pts</span>
+          <span style="font-size:0.82rem;color:rgba(255,255,255,0.7)">Finance head review; may request documentation</span>
+          <span style="font-size:0.78rem;color:#ff8c42;font-weight:600">2–5 days</span>
+        </div>
+        <div style="display:grid;grid-template-columns:110px 120px 1fr 130px;padding:14px 24px;align-items:center;background:rgba(255,71,87,0.06)">
+          <span style="font-size:0.78rem;font-weight:700;color:var(--red)">● CRITICAL</span>
+          <span style="font-size:0.82rem;color:var(--muted)">50+ pts</span>
+          <span style="font-size:0.82rem;color:rgba(255,255,255,0.7)">Payment auto-held; executive override required</span>
+          <span style="font-size:0.78rem;color:var(--red);font-weight:600">Held</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ctasec sec"><div class="si"><div class="ctabox reveal"><h2>Stop approving invoices that <em>shouldn't be paid</em></h2><p>TechFinLens catches duplicates, bank-account fraud, velocity schemes, and tax violations before they reach your books. 100% invoice coverage. Set up in minutes.</p><div class="ctabtns"><button class="btn-p">Request a Demo →</button><button class="btn-o" onclick="document.getElementById('us-price').scrollIntoView({behavior:'smooth'})">View Pricing</button></div><div style="margin-top:22px;font-size:0.78rem;color:var(--muted)">sid.s@techfinlens.ai &nbsp;·&nbsp; techfinlens.ai</div></div></div></section>
+
+  <footer class="sfooter">
+    <span style="font-family:'Syne',sans-serif;font-weight:800;font-size:1.1rem;cursor:pointer" onclick="goTo('picker')">TechFinLens 🇺🇸</span>
+    <div class="fcopy">© 2026 TechFinLens · AI-Powered AP Automation for the United States</div>
+    <div class="flinks"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">API Docs</a><a href="#">Contact</a></div>
+  </footer>
+</div><!-- /usa-page -->
+
+<script>
+function goTo(target) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.body.classList.remove('picker','india','usa');
+  if (target === 'picker') {
+    document.getElementById('picker-page').classList.add('active');
+    document.body.classList.add('picker');
+  } else if (target === 'india') {
+    document.getElementById('india-page').classList.add('active');
+    document.body.classList.add('india');
+    requestAnimationFrame(() => { window.scrollTo(0,0); initReveal(); });
+  } else if (target === 'usa') {
+    document.getElementById('usa-page').classList.add('active');
+    document.body.classList.add('usa');
+    requestAnimationFrame(() => { window.scrollTo(0,0); initReveal(); });
+  }
+}
+
+function initReveal() {
+  const els = document.querySelectorAll('.page.active .reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+  els.forEach(el => { el.classList.remove('visible'); io.observe(el); });
+}
+
+// Picker card 3D tilt
+document.querySelectorAll('.pk-card').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `translateY(-8px) rotateX(${-y*8}deg) rotateY(${x*8}deg)`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('picker');
+  initReveal();
+});
+</script>
+</body>
+</html>
