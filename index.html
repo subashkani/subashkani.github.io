@@ -839,11 +839,21 @@ function goTo(target) {
   } else if (target === 'india') {
     document.getElementById('india-page').classList.add('active');
     document.body.classList.add('india');
-    requestAnimationFrame(() => { window.scrollTo(0,0); initReveal(); });
+    requestAnimationFrame(() => {
+      const hero = document.querySelector('#india-page .hero');
+      const navH = (document.querySelector('.snav') || {offsetHeight:0}).offsetHeight;
+      window.scrollTo({ top: hero ? hero.getBoundingClientRect().top + window.scrollY - navH : 0, behavior: 'instant' });
+      initReveal();
+    });
   } else if (target === 'usa') {
     document.getElementById('usa-page').classList.add('active');
     document.body.classList.add('usa');
-    requestAnimationFrame(() => { window.scrollTo(0,0); initReveal(); });
+    requestAnimationFrame(() => {
+      const hero = document.querySelector('#usa-page .hero');
+      const navH = (document.querySelector('.snav') || {offsetHeight:0}).offsetHeight;
+      window.scrollTo({ top: hero ? hero.getBoundingClientRect().top + window.scrollY - navH : 0, behavior: 'instant' });
+      initReveal();
+    });
   }
 }
 
